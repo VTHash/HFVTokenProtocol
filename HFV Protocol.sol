@@ -2,13 +2,13 @@
 pragma solidity ^0.8.20;
 
 /// @dev Minimal ERC20 + Ownable implementation to support HFVToken
-abstract contract Context {
+contract Context {
     function _msgSender() internal view virtual returns (address) {
         return msg.sender;
     }
 }
 
-abstract contract Ownable is Context {
+contract Ownable is Context {
     address private _owner;
 
     event OwnershipTransferred(address indexed previousOwner, address indexed newOwner);
@@ -57,11 +57,11 @@ contract ERC20 is Context, IERC20 {
         _symbol = symbol_;
     }
 
-    function totalSupply() public view virtual override returns (uint256) {
+    function totalSupply() public view override returns (uint256) {
         return _totalSupply;
     }
 
-    function balanceOf(address account) public view virtual override returns (uint256) {
+    function balanceOf(address account) public view override returns (uint256) {
         return _balances[account];
     }
 
@@ -71,17 +71,17 @@ contract ERC20 is Context, IERC20 {
         return true;
     }
 
-    function allowance(address owner, address spender) public view virtual override returns (uint256) {
+    function allowance(address owner, address spender) public view override returns (uint256) {
         return _allowances[owner][spender];
     }
 
-    function approve(address spender, uint256 amount) public virtual override returns (bool) {
+    function approve(address spender, uint256 amount) public override returns (bool) {
         address owner = _msgSender();
         _approve(owner, spender, amount);
         return true;
     }
 
-    function transferFrom(address from, address to, uint256 amount) public virtual override returns (bool) {
+    function transferFrom(address from, address to, uint256 amount) public override returns (bool) {
         address spender = _msgSender();
         _spendAllowance(from, spender, amount);
         _transfer(from, to, amount);
@@ -89,11 +89,11 @@ contract ERC20 is Context, IERC20 {
     }
 
     function _transfer(address from, address to, uint256 amount) internal virtual {
-        require(from != address(0), "ERC20: transfer from the zero address");
-        require(to != address(0), "ERC20: transfer to the zero address");
+        require(from != address(0), "ERC20: transfer from zero address");
+        require(to != address(0), "ERC20: transfer to zero address");
 
         uint256 fromBalance = _balances[from];
-        require(fromBalance >= amount, "ERC20: transfer amount exceeds balance");
+        require(fromBalance >= amount, "ERC20: transfer exceeds balance");
         unchecked {
             _balances[from] = fromBalance - amount;
         }
@@ -103,7 +103,7 @@ contract ERC20 is Context, IERC20 {
     }
 
     function _mint(address account, uint256 amount) internal virtual {
-        require(account != address(0), "ERC20: mint to the zero address");
+        require(account != address(0), "ERC20: mint to zero address");
 
         _totalSupply += amount;
         _balances[account] += amount;
@@ -111,8 +111,8 @@ contract ERC20 is Context, IERC20 {
     }
 
     function _approve(address owner, address spender, uint256 amount) internal virtual {
-        require(owner != address(0), "ERC20: approve from the zero address");
-        require(spender != address(0), "ERC20: approve to the zero address");
+        require(owner != address(0), "ERC20: approve from zero address");
+        require(spender != address(0), "ERC20: approve to zero address");
 
         _allowances[owner][spender] = amount;
         emit Approval(owner, spender, amount);
@@ -163,4 +163,3 @@ contract HFVToken is ERC20, Ownable {
         _transfer(psfAddress, msg.sender, amount);
     }
 }
-
